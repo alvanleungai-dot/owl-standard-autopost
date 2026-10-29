@@ -1,0 +1,37 @@
+[
+  {
+    "name": "SCE-Preflight",
+    "entry": "scripts/preflight.mjs",
+    "cron": "0 8 * * *",
+    "env": "JOB_SCE_PREFLIGHT_ENABLED",
+    "publisher": false
+  },
+  {
+    "name": "SCE-Catchup",
+    "entry": "scripts/catchup.mjs",
+    "cron": "0 */2 * * *",
+    "env": "JOB_SCE_CATCHUP_ENABLED",
+    "publisher": false
+  },
+  {
+    "name": "OwlStandard-WeeklyAutopilot",
+    "entry": "scripts/owl-standard/weekly-run.mjs",
+    "cron": "0 18 * * 4",
+    "env": "JOB_OWL_STANDARD_WEEKLY_AUTOPILOT_ENABLED",
+    "publisher": false
+  },
+  {
+    "name": "SCE-FB-Topup",
+    "entry": "scripts/fb-topup.mjs",
+    "cron": "30 9 * * *",
+    "env": "JOB_SCE_FB_TOPUP_ENABLED",
+    "publisher": true
+  },
+  {
+    "name": "OwlStandard-IG-Daily",
+    "entry": "scripts/owl-standard/api-ig-daily.mjs",
+    "cron": "5 10 * * *",
+    "env": "JOB_OWL_STANDARD_IG_DAILY_ENABLED",
+    "publisher": true
+  }
+]

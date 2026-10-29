@@ -1,0 +1,31 @@
+node_modules/
+dist/
+build/
+.env
+.env.*
+# ...but the template MUST ship — it is the setup checklist's reference for every variable.
+!.env.example
+secrets/
+secrets/gatekeeper-state.json
+data/
+*.log
+.DS_Store
+Thumbs.db
+_probe/
+# Poster background cache — regenerable from the gpt-image API, not source.
+companies/*/.bg-cache/
+
+# Graphify navigation artifacts - locally regenerated, not source (2026-07-10 reconciliation plan)
+graphify-out/
+
+# Machine-local agent settings - not shared config (2026-07-10)
+.claude/settings.local.json
+
+# Temp checkout made by scripts/selftest-cloud-import.mjs. It cleans up on
+# success but NOT on failure — and a failing run is exactly when it matters,
+# because the leftover tree contains a copy of scripts/ that would be committed.
+.cloud-import-checkout-*/
+
+# Generated fontconfig (scripts/lib/fonts.mjs). Holds ABSOLUTE machine paths and a font cache —
+# it is runtime state, regenerated at boot. On Render it lands on the mounted disk instead.
+fontconfig/

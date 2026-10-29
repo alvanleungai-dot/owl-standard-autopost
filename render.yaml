@@ -1,0 +1,80 @@
+services:
+  - type: worker
+    name: social-content-engine
+    runtime: node
+    # plan and region are NOT defaults — they are the 2026-07-24 hosting ruling
+    # (docs/ai/DECISIONS.md): "one Render Background Worker, Starter 512MB,
+    # Singapore, US$7/mo FLAT". Singapore is the nearest region to Hong Kong,
+    # which is where the brands, the owner and the posting schedule all live.
+    # Omitting these let Render pick, which is how a declared cost decision
+    # silently becomes a different one.
+    plan: starter
+    region: singapore
+    autoDeploy: false
+    numInstances: 1
+    buildCommand: npm ci
+    startCommand: node scripts/init-state-dir.mjs && node scripts/render-worker.mjs
+    envVars:
+      - key: CLOUD
+        value: "1"
+      - key: STATE_DIR
+        value: /var/data/social-content-engine
+      # EXACT VALUES — a wrong value silently leaves things OFF (doctor.mjs flags it):
+      # PUBLISHING_ENABLED must be exactly "1"; every JOB_* flag must be exactly "true".
+      - key: PUBLISHING_ENABLED
+        sync: false
+      - key: JOB_OWL_STANDARD_WEEKLY_AUTOPILOT_ENABLED
+        sync: false
+      - key: JOB_OWL_STANDARD_REVIEW_BOT_ENABLED
+        sync: false
+      - key: JOB_SCE_FB_TOPUP_ENABLED
+        sync: false
+      - key: JOB_OWL_STANDARD_IG_DAILY_ENABLED
+        sync: false
+      - key: JOB_SCE_PREFLIGHT_ENABLED
+        sync: false
+      - key: JOB_SCE_CATCHUP_ENABLED
+        sync: false
+      - key: JOB_SCE_REPAIR_ENABLED
+        sync: false
+      - key: RUN_JOB_ONCE
+        sync: false
+      # Image provider. Higgsfield uses the owner's existing account (no separate OpenAI image spend).
+      # Set to "openai" to fall back to gpt-image-2 — see scripts/lib/image-backend.mjs for why both
+      # exist (these posters render Traditional Chinese inside the image).
+      - key: IMAGE_BACKEND
+        value: higgsfield
+      # sync:false = set in the Render dashboard, never committed. Every credential the worker needs;
+      # the full annotated list with where to obtain each one is in .env.example.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: HIGGSFIELD_API_KEY_ID
+        sync: false
+      - key: HIGGSFIELD_API_KEY_SECRET
+        sync: false
+      - key: OPENAI_API_KEY          # only needed when IMAGE_BACKEND=openai
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN_OWLSTANDARD
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN__OPS
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+      - key: TELEGRAM_OWNER_CHAT_ID
+        sync: false
+      - key: FB_PAGE_TOKEN_OWLSTANDARD
+        sync: false
+      - key: FB_PAGE_ID_OWLSTANDARD
+        sync: false
+      - key: IG_USER_ID_OWLSTANDARD
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+    disk:
+      name: sce-state
+      mountPath: /var/data/social-content-engine
+      sizeGB: 1
